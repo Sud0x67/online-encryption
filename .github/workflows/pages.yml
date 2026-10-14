@@ -32,7 +32,7 @@ jobs:
             playwright-report/
             test-results/
           retention-days: 7
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5.0.0
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         with:
           path: dist/online-encryption/browser
@@ -47,5 +47,5 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/deploy-pages@v4
+      - uses: actions/deploy-pages@v5.0.1
         id: deployment
