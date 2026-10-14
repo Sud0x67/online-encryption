@@ -31,6 +31,8 @@ npx playwright install chromium firefox webkit
 npm run test:e2e       # Chromium、Firefox、WebKit、移动端
 ```
 
+每个工具页包含「工具」与「算法介绍」两个子 Tab，默认显示工具。介绍页提供基本原理、参数概览、常见用途、使用要点和标准参考资料；切换 Tab 保留输入、密钥与计算结果。
+
 ## 算法与约定
 
 | 工具       | 支持参数                                                  |

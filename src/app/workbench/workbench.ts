@@ -9,6 +9,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTabsModule } from '@angular/material/tabs';
+import { ALGORITHM_GUIDES } from './algorithm-guides';
 import { algorithmById, defaults } from '../crypto/registry';
 import { CryptoService } from '../crypto/crypto.service';
 import { decode, encode } from '../crypto/encoding';
@@ -23,6 +25,7 @@ import { CryptoResult, Encoding, Hash, KeyPair, Operation } from '../crypto/type
     MatSelectModule,
     MatCheckboxModule,
     MatProgressBarModule,
+    MatTabsModule,
   ],
   templateUrl: './workbench.html',
   styleUrl: './workbench.scss',
@@ -32,6 +35,7 @@ export class Workbench {
   private readonly snack = inject(MatSnackBar);
   private readonly destroyRef = inject(DestroyRef);
   readonly algorithm = algorithmById(inject(ActivatedRoute).snapshot.url.at(-1)?.path ?? 'aes');
+  readonly guide = ALGORITHM_GUIDES[this.algorithm.id];
   readonly form = inject(FormBuilder).nonNullable.group(defaults(this.algorithm.id));
   readonly p = signal(this.form.getRawValue());
   readonly busy = signal(false);
@@ -45,12 +49,6 @@ export class Workbench {
     { value: 'base64', label: 'Base64' },
   ];
   readonly hashes: Hash[] = ['SHA-1', 'SHA-256', 'SHA-384', 'SHA-512'];
-  readonly visualMark =
-    this.algorithm.category === 'digest' || this.algorithm.category === 'hmac'
-      ? '#'
-      : this.algorithm.category === 'encoding'
-        ? '↔'
-        : '{ }';
   readonly isCipher =
     this.algorithm.category === 'symmetric' || this.algorithm.category === 'asymmetric';
   readonly isSymmetric = this.algorithm.category === 'symmetric';

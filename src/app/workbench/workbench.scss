@@ -566,3 +566,119 @@ h2 {
     gap: 4px;
   }
 }
+
+.tab-content {
+  padding-top: 22px;
+}
+.guide {
+  max-width: 960px;
+  padding: 28px 0 12px;
+}
+.guide-header h2 {
+  font-size: 24px;
+  margin: 13px 0;
+}
+.guide-category {
+  color: var(--accent);
+  font-size: 11px;
+}
+.guide p {
+  color: #a4b5c6;
+  font-size: 13px;
+  line-height: 1.9;
+  margin: 0;
+}
+.guide-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  margin: 24px 0 28px;
+}
+.guide-facts > div {
+  padding: 18px 20px;
+}
+.guide-facts > div + div {
+  border-left: 1px solid var(--border);
+}
+.guide-facts dt {
+  color: var(--muted);
+  font-size: 11px;
+  margin-bottom: 10px;
+}
+.guide-facts dd {
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.guide-sections {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+.guide h3 {
+  color: #dae6ef;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0 0 12px;
+}
+.guide-notes {
+  margin-top: 26px;
+}
+.guide-notes ul {
+  margin: 0;
+  padding-left: 19px;
+  color: #a4b5c6;
+  font-size: 13px;
+  line-height: 1.9;
+}
+.guide-notes li + li {
+  margin-top: 8px;
+}
+.guide .help-strip {
+  margin-top: 26px;
+}
+.guide .help-strip p {
+  font-size: 12px;
+}
+.guide-sources {
+  display: flex;
+  gap: 12px 18px;
+  flex-wrap: wrap;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+  margin-top: 24px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.guide-sources a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.guide-sources a:hover {
+  text-decoration: underline;
+}
+@media (max-width: 720px) {
+  .guide-facts {
+    grid-template-columns: 1fr;
+  }
+  .guide-facts > div {
+    padding: 14px 16px;
+  }
+  .guide-facts > div + div {
+    border-left: 0;
+    border-top: 1px solid var(--border);
+  }
+  .guide-sections {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .guide-sources {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

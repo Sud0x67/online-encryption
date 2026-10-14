@@ -190,3 +190,67 @@ test('SM2 empty-message authentication is checked in the browser worker', async 
   await page.getByRole('button', { name: '执行解密 →', exact: true }).click();
   await expect(page.getByRole('alert')).toContainText('完整性验证失败');
 });
+
+test('guide is in a separate tab and tab switches preserve inputs and results', async ({
+  page,
+}) => {
+  await open(page);
+  await expect(page.getByRole('tab', { name: '工具', exact: true })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
+  await expect(page.getByRole('heading', { name: '了解 AES', exact: true })).not.toBeVisible();
+  await page.getByRole('button', { name: '载入示例' }).click();
+  await run(page);
+  const ciphertext = await output(page).inputValue();
+  const key = await page.getByRole('textbox', { name: /原始密钥/ }).inputValue();
+  await page.getByRole('tab', { name: '算法介绍', exact: true }).click();
+  await expect(page.getByRole('heading', { name: '了解 AES', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '基本原理', exact: true })).toBeVisible();
+  await expect(page.getByRole('textbox', { name: '输入内容' })).not.toBeVisible();
+  await page.getByRole('tab', { name: '工具', exact: true }).click();
+  await expect(output(page)).toHaveValue(ciphertext);
+  await expect(page.getByRole('textbox', { name: /原始密钥/ })).toHaveValue(key);
+  await expect(page.getByRole('status')).toContainText('计算完成');
+  await page.getByRole('button', { name: '回填输入' }).click();
+  await run(page, '执行解密');
+  await expect(output(page)).toHaveValue('Hello, Cipher Lab! 你好 🔐');
+});
+
+test('all tools have readable guides, source links and responsive layout', async ({ page }) => {
+  for (const id of [
+    'aes',
+    'des',
+    '3des',
+    'sm4',
+    'rsa',
+    'sm2',
+    'md5',
+    'sha1',
+    'sha256',
+    'sha384',
+    'sha512',
+    'sm3',
+    'hmac',
+    'encoding',
+  ]) {
+    await open(page, id);
+    await expect(page.getByRole('tab', { name: '工具', exact: true })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    await page.getByRole('tab', { name: '算法介绍', exact: true }).click();
+    const guide = page.getByRole('article');
+    await expect(guide).toBeVisible();
+    await expect(guide.getByRole('heading', { name: '使用要点', exact: true })).toBeVisible();
+    const links = guide.getByRole('link');
+    expect(await links.count()).toBeGreaterThan(0);
+    for (const link of await links.all()) {
+      await expect(link).toHaveAttribute('href', /^https:\/\//);
+      await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
+  }
+});
