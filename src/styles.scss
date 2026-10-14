@@ -1,0 +1,96 @@
+@use '@angular/material' as mat;
+html {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
+        primary: mat.$cyan-palette,
+        tertiary: mat.$orange-palette,
+      ),
+      typography: 'Arial, "Microsoft YaHei", sans-serif',
+      density: -3,
+    )
+  );
+}
+:root {
+  color-scheme: dark;
+  --accent: #61ded0;
+  --text: #e7edf5;
+  --muted: #8092a6;
+  --border: #233041;
+  --panel: #111c29;
+  --mono: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: #0c131e;
+  color: var(--text);
+  font-family: Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+button,
+input,
+textarea {
+  font: inherit;
+}
+button,
+a,
+input,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+::selection {
+  background: #2d655f;
+  color: #fff;
+}
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: #30465b;
+  border-radius: 5px;
+}
+.mat-mdc-form-field {
+  width: 100%;
+}
+.mat-mdc-text-field-wrapper {
+  background: #0c1622 !important;
+}
+.mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+.mat-mdc-form-field-infix {
+  min-height: 48px !important;
+}
+.mat-mdc-select,
+.mat-mdc-input-element {
+  font-size: 12px !important;
+}
+.mat-mdc-floating-label {
+  font-size: 12px !important;
+}
+.mat-mdc-outlined-button,
+.mat-mdc-button,
+.mat-mdc-unelevated-button {
+  border-radius: 6px !important;
+  font-size: 12px !important;
+  letter-spacing: 0 !important;
+}
+.mat-mdc-unelevated-button {
+  --mdc-filled-button-container-color: var(--accent);
+  --mdc-filled-button-label-text-color: #072420;
+}
+.mat-mdc-snack-bar-container {
+  --mat-snack-bar-container-color: #223640;
+  --mat-snack-bar-supporting-text-color: #e7edf5;
+}
