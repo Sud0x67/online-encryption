@@ -415,21 +415,6 @@ h2 {
   outline-color: var(--accent);
   overflow-wrap: anywhere;
 }
-.explanation {
-  display: flex;
-  gap: 15px;
-  color: #8ba4b7;
-}
-.explanation p {
-  font-size: 12px;
-  line-height: 1.8;
-  margin: 0;
-}
-.explanation-icon {
-  font-size: 28px;
-  color: #4a8b86;
-  font-family: var(--mono);
-}
 .warning {
   background: #30291f;
   border: 1px solid #4c4030;
@@ -681,4 +666,8 @@ h2 {
     align-items: flex-start;
     flex-direction: column;
   }
+}
+
+.standalone-warning {
+  margin-top: 16px;
 }

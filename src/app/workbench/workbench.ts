@@ -51,6 +51,7 @@ export class Workbench {
   readonly hashes: Hash[] = ['SHA-1', 'SHA-256', 'SHA-384', 'SHA-512'];
   readonly isCipher =
     this.algorithm.category === 'symmetric' || this.algorithm.category === 'asymmetric';
+  readonly hasParameters = this.isCipher || this.algorithm.id === 'hmac';
   readonly isSymmetric = this.algorithm.category === 'symmetric';
   readonly needsKey = this.isSymmetric || this.algorithm.id === 'hmac';
   readonly isBlock = computed(() => this.isSymmetric && !['GCM', 'CTR'].includes(this.p().mode));
