@@ -2,7 +2,7 @@
   <div>
     <div class="eyebrow">CRYPTOGRAPHY WORKBENCH</div>
     <h1>
-      {{ algorithm.title }}<span>{{ algorithm.subtitle }}</span>
+      {{ t(algorithm.title) }}<span>{{ t(algorithm.subtitle) }}</span>
     </h1>
   </div>
 </section>
@@ -12,12 +12,12 @@
   mat-align-tabs="start"
   [preserveContent]="true"
   animationDuration="0ms"
-  aria-label="算法工具与介绍"
+  [attr.aria-label]="t('算法工具与介绍')"
 >
-  <mat-tab label="工具">
+  <mat-tab [label]="t('工具')">
     <div class="tab-content">
       <div class="toolbar">
-        <div class="operation-tabs" role="group" aria-label="操作选择">
+        <div class="operation-tabs" role="group" [attr.aria-label]="t('操作选择')">
           @if (isCipher) {
             <button
               type="button"
@@ -26,7 +26,7 @@
               (click)="operation('encrypt')"
               [disabled]="busy()"
             >
-              加密 <span>ENCRYPT</span></button
+              {{ t('加密') }} <span>ENCRYPT</span></button
             ><button
               type="button"
               [class.selected]="p().operation === 'decrypt'"
@@ -34,18 +34,21 @@
               (click)="operation('decrypt')"
               [disabled]="busy()"
             >
-              解密 <span>DECRYPT</span>
+              {{ t('解密') }} <span>DECRYPT</span>
             </button>
           } @else {
             <button type="button" class="selected" aria-pressed="true">
-              {{ algorithm.category === 'encoding' ? '编码转换' : '计算摘要' }}
+              {{ algorithm.category === 'encoding' ? t('编码转换') : t('计算摘要') }}
               <span>{{ algorithm.category === 'encoding' ? 'CONVERT' : 'COMPUTE' }}</span>
             </button>
           }
         </div>
         <div class="toolbar-actions">
-          <button mat-button type="button" (click)="example()" [disabled]="busy()">载入示例</button
-          ><button mat-button type="button" (click)="clear()" [disabled]="busy()">清空</button>
+          <button mat-button type="button" (click)="example()" [disabled]="busy()">
+            {{ t('载入示例') }}</button
+          ><button mat-button type="button" (click)="clear()" [disabled]="busy()">
+            {{ t('清空') }}
+          </button>
         </div>
       </div>
       <form [formGroup]="form" (ngSubmit)="run()" autocomplete="off" class="workspace">
@@ -56,52 +59,52 @@
                 <span class="step">01</span
                 >{{
                   p().operation === 'encrypt'
-                    ? '明文输入'
+                    ? t('明文输入')
                     : p().operation === 'decrypt'
-                      ? '密文输入'
-                      : '原始输入'
+                      ? t('密文输入')
+                      : t('原始输入')
                 }}
               </h2>
               <span class="tiny-label">INPUT</span>
             </div>
             <div class="input-toolbar">
               <mat-form-field appearance="outline"
-                ><mat-label>输入编码</mat-label
+                ><mat-label>{{ t('输入编码') }}</mat-label
                 ><mat-select formControlName="inputEncoding">
                   @for (encoding of encodings; track encoding.value) {
-                    <mat-option [value]="encoding.value">{{ encoding.label }}</mat-option>
+                    <mat-option [value]="encoding.value">{{ t(encoding.label) }}</mat-option>
                   }
                 </mat-select></mat-form-field
-              ><span class="byte-count">{{ inputBytes() }}</span>
+              ><span class="byte-count">{{ t(inputBytes()) }}</span>
             </div>
             <textarea
               class="input-editor"
               formControlName="input"
-              aria-label="输入内容"
+              [attr.aria-label]="t('输入内容')"
               spellcheck="false"
               autocapitalize="off"
-              placeholder="在这里输入内容，或点击「载入示例」开始…"
+              [placeholder]="t('在这里输入内容，或点击「载入示例」开始…')"
             ></textarea>
             <div class="editor-foot">
               <span>{{
                 p().inputEncoding === 'utf8'
-                  ? 'UTF-8 · 支持中文与 emoji'
-                  : '仅接受对应编码的字节数据'
+                  ? t('UTF-8 · 支持中文与 emoji')
+                  : t('仅接受对应编码的字节数据')
               }}</span
-              ><span>本地处理</span>
+              ><span>{{ t('本地处理') }}</span>
             </div>
           </section>
           @if (hasParameters) {
             <section class="panel params-panel">
               <div class="panel-heading">
-                <h2><span class="step">02</span>算法参数</h2>
+                <h2><span class="step">02</span>{{ t('算法参数') }}</h2>
                 <span class="tiny-label">PARAMETERS</span>
               </div>
               <div class="parameters">
                 @if (isSymmetric) {
                   <div class="fields-row">
                     <mat-form-field appearance="outline"
-                      ><mat-label>加密模式</mat-label
+                      ><mat-label>{{ t('加密模式') }}</mat-label
                       ><mat-select formControlName="mode">
                         @for (mode of algorithm.modes; track mode) {
                           <mat-option [value]="mode">{{ mode }}</mat-option>
@@ -110,33 +113,38 @@
                     >
                     @if (isBlock()) {
                       <mat-form-field appearance="outline"
-                        ><mat-label>填充方式</mat-label
+                        ><mat-label>{{ t('填充方式') }}</mat-label
                         ><mat-select formControlName="padding"
                           ><mat-option value="pkcs7">PKCS#7</mat-option
-                          ><mat-option value="none">无填充</mat-option></mat-select
+                          ><mat-option value="none">{{ t('无填充') }}</mat-option></mat-select
                         ></mat-form-field
                       >
                     } @else {
                       <div class="parameter-note">
-                        {{ p().mode === 'GCM' ? '认证加密 · 128 位标签' : '流模式 · 128 位计数器'
-                        }}<small>无需填充</small>
+                        {{
+                          p().mode === 'GCM'
+                            ? t('认证加密 · 128 位标签')
+                            : t('流模式 · 128 位计数器')
+                        }}<small>{{ t('无需填充') }}</small>
                       </div>
                     }
                   </div>
                   @if (algorithm.id === 'aes') {
                     <mat-form-field appearance="outline"
-                      ><mat-label>生成密钥位数</mat-label
+                      ><mat-label>{{ t('生成密钥位数') }}</mat-label
                       ><mat-select formControlName="keySize"
-                        ><mat-option [value]="128">128 位 / 16 bytes</mat-option
-                        ><mat-option [value]="192">192 位 / 24 bytes</mat-option
-                        ><mat-option [value]="256">256 位 / 32 bytes</mat-option></mat-select
+                        ><mat-option [value]="128">{{ t('128 位 / 16 bytes') }}</mat-option
+                        ><mat-option [value]="192">{{ t('192 位 / 24 bytes') }}</mat-option
+                        ><mat-option [value]="256">{{
+                          t('256 位 / 32 bytes')
+                        }}</mat-option></mat-select
                       ></mat-form-field
                     >
                   }
                 }
                 @if (algorithm.id === 'hmac') {
                   <mat-form-field appearance="outline"
-                    ><mat-label>摘要算法</mat-label
+                    ><mat-label>{{ t('摘要算法') }}</mat-label
                     ><mat-select formControlName="hash">
                       @for (hash of hashes; track hash) {
                         <mat-option [value]="hash">{{ hash }}</mat-option>
@@ -146,21 +154,21 @@
                 }
                 @if (needsKey) {
                   <div class="field-caption">
-                    <label for="key">密钥 <span>KEY</span></label
+                    <label for="key">{{ t('密钥') }} <span>KEY</span></label
                     ><button mat-button type="button" (click)="random('key')" [disabled]="busy()">
-                      ↻ 随机生成
+                      {{ t('↻ 随机生成') }}
                     </button>
                   </div>
                   <div class="encoded-field">
                     <mat-form-field appearance="outline"
-                      ><mat-label>密钥编码</mat-label
+                      ><mat-label>{{ t('密钥编码') }}</mat-label
                       ><mat-select formControlName="keyEncoding">
                         @for (encoding of encodings; track encoding.value) {
-                          <mat-option [value]="encoding.value">{{ encoding.label }}</mat-option>
+                          <mat-option [value]="encoding.value">{{ t(encoding.label) }}</mat-option>
                         }
                       </mat-select></mat-form-field
                     ><mat-form-field appearance="outline"
-                      ><mat-label>原始密钥</mat-label
+                      ><mat-label>{{ t('原始密钥') }}</mat-label
                       ><input
                         matInput
                         id="key"
@@ -173,62 +181,64 @@
                   <p class="field-help">
                     {{
                       algorithm.id === 'hmac'
-                        ? '输入原始密钥，不执行口令派生。'
-                        : '按实际字节长度使用密钥，不自动截断或补齐。'
+                        ? t('输入原始密钥，不执行口令派生。')
+                        : t('按实际字节长度使用密钥，不自动截断或补齐。')
                     }}
                   </p>
                 }
                 @if (isSymmetric && p().mode !== 'ECB') {
                   <div class="field-caption">
-                    <label for="iv">初始化向量 <span>IV</span></label
+                    <label for="iv">{{ t('初始化向量') }} <span>IV</span></label
                     ><button mat-button type="button" (click)="random('iv')" [disabled]="busy()">
-                      ↻ 随机生成
+                      {{ t('↻ 随机生成') }}
                     </button>
                   </div>
                   <div class="encoded-field">
                     <mat-form-field appearance="outline"
-                      ><mat-label>IV 编码</mat-label
+                      ><mat-label>{{ t('IV 编码') }}</mat-label
                       ><mat-select formControlName="ivEncoding">
                         @for (encoding of encodings; track encoding.value) {
-                          <mat-option [value]="encoding.value">{{ encoding.label }}</mat-option>
+                          <mat-option [value]="encoding.value">{{ t(encoding.label) }}</mat-option>
                         }
                       </mat-select></mat-form-field
                     ><mat-form-field appearance="outline"
-                      ><mat-label>初始化向量</mat-label
+                      ><mat-label>{{ t('初始化向量') }}</mat-label
                       ><input matInput id="iv" formControlName="iv" spellcheck="false" class="mono"
                     /></mat-form-field>
                   </div>
                   <p class="field-help">
                     {{
                       p().mode === 'GCM'
-                        ? '12 bytes；同一密钥下，每次实际加密必须使用唯一 IV。'
-                        : '解密时需使用与加密相同的 IV。'
+                        ? t('12 bytes；同一密钥下，每次实际加密必须使用唯一 IV。')
+                        : t('解密时需使用与加密相同的 IV。')
                     }}
                   </p>
                 }
                 @if (isSymmetric && p().mode === 'GCM') {
                   <div class="field-caption">
-                    <label for="aad">附加认证数据 <span>AAD · 可选</span></label>
+                    <label for="aad"
+                      >{{ t('附加认证数据') }} <span>{{ t('AAD · 可选') }}</span></label
+                    >
                   </div>
                   <div class="encoded-field">
                     <mat-form-field appearance="outline"
-                      ><mat-label>AAD 编码</mat-label
+                      ><mat-label>{{ t('AAD 编码') }}</mat-label
                       ><mat-select formControlName="aadEncoding">
                         @for (encoding of encodings; track encoding.value) {
-                          <mat-option [value]="encoding.value">{{ encoding.label }}</mat-option>
+                          <mat-option [value]="encoding.value">{{ t(encoding.label) }}</mat-option>
                         }
                       </mat-select></mat-form-field
                     ><mat-form-field appearance="outline"
-                      ><mat-label>附加认证数据</mat-label
+                      ><mat-label>{{ t('附加认证数据') }}</mat-label
                       ><input matInput id="aad" formControlName="aad" spellcheck="false"
                     /></mat-form-field>
                   </div>
                   <div class="field-caption">
-                    <label for="tag">认证标签 <span>TAG · 16 bytes</span></label>
+                    <label for="tag">{{ t('认证标签') }} <span>TAG · 16 bytes</span></label>
                   </div>
                   <div class="encoded-field">
                     <mat-form-field appearance="outline"
-                      ><mat-label>标签编码</mat-label
+                      ><mat-label>{{ t('标签编码') }}</mat-label
                       ><mat-select formControlName="tagEncoding"
                         ><mat-option value="base64">Base64</mat-option
                         ><mat-option value="hex">Hex</mat-option></mat-select
@@ -236,7 +246,7 @@
                     >
                     @if (p().operation === 'decrypt') {
                       <mat-form-field appearance="outline"
-                        ><mat-label>认证标签</mat-label
+                        ><mat-label>{{ t('认证标签') }}</mat-label
                         ><input
                           matInput
                           id="tag"
@@ -245,14 +255,16 @@
                           spellcheck="false"
                       /></mat-form-field>
                     } @else {
-                      <div class="parameter-note">加密后单独输出<small>不拼接到密文中</small></div>
+                      <div class="parameter-note">
+                        {{ t('加密后单独输出') }}<small>{{ t('不拼接到密文中') }}</small>
+                      </div>
                     }
                   </div>
                 }
                 @if (algorithm.id === 'rsa') {
                   <div class="fields-row">
                     <mat-form-field appearance="outline"
-                      ><mat-label>RSA 填充</mat-label
+                      ><mat-label>{{ t('RSA 填充') }}</mat-label
                       ><mat-select formControlName="rsaScheme"
                         ><mat-option value="OAEP">OAEP</mat-option
                         ><mat-option value="PKCS1">PKCS#1 v1.5</mat-option></mat-select
@@ -260,7 +272,7 @@
                     >
                     @if (p().rsaScheme === 'OAEP') {
                       <mat-form-field appearance="outline"
-                        ><mat-label>OAEP / MGF1 摘要</mat-label
+                        ><mat-label>{{ t('OAEP / MGF1 摘要') }}</mat-label
                         ><mat-select formControlName="hash"
                           ><mat-option value="SHA-1">SHA-1</mat-option
                           ><mat-option value="SHA-256">SHA-256</mat-option></mat-select
@@ -270,14 +282,14 @@
                   </div>
                   <div class="fields-row">
                     <mat-form-field appearance="outline"
-                      ><mat-label>生成密钥位数</mat-label
+                      ><mat-label>{{ t('生成密钥位数') }}</mat-label
                       ><mat-select formControlName="rsaBits"
                         ><mat-option [value]="2048">2048</mat-option
                         ><mat-option [value]="3072">3072</mat-option
                         ><mat-option [value]="4096">4096</mat-option></mat-select
                       ></mat-form-field
                     ><mat-form-field appearance="outline"
-                      ><mat-label>生成 PEM 格式</mat-label
+                      ><mat-label>{{ t('生成 PEM 格式') }}</mat-label
                       ><mat-select formControlName="pemFormat"
                         ><mat-option value="standard">SPKI / PKCS#8</mat-option
                         ><mat-option value="pkcs1">PKCS#1</mat-option></mat-select
@@ -287,13 +299,17 @@
                 }
                 @if (algorithm.id === 'sm2') {
                   <mat-form-field appearance="outline"
-                    ><mat-label>密文顺序</mat-label
+                    ><mat-label>{{ t('密文顺序') }}</mat-label
                     ><mat-select formControlName="sm2Order"
                       ><mat-option value="C1C3C2">C1C3C2</mat-option
                       ><mat-option value="C1C2C3">C1C2C3</mat-option></mat-select
                     ></mat-form-field
-                  ><mat-checkbox formControlName="c1Prefix">密文包含 C1 的 04 前缀</mat-checkbox>
-                  <p class="field-help">公钥：04 前缀 Hex 或压缩点；私钥：32 bytes Hex。</p>
+                  ><mat-checkbox formControlName="c1Prefix">{{
+                    t('密文包含 C1 的 04 前缀')
+                  }}</mat-checkbox>
+                  <p class="field-help">
+                    {{ t('公钥：04 前缀 Hex 或压缩点；私钥：32 bytes Hex。') }}
+                  </p>
                 }
                 @if (algorithm.category === 'asymmetric') {
                   <div class="key-actions">
@@ -303,18 +319,18 @@
                       (click)="generateKeys()"
                       [disabled]="busy()"
                     >
-                      ↻ 生成密钥对</button
-                    ><span>生成后可编辑或复制</span>
+                      {{ t('↻ 生成密钥对') }}</button
+                    ><span>{{ t('生成后可编辑或复制') }}</span>
                   </div>
                   <div class="field-caption">
-                    <label for="public-key">公钥 <span>PUBLIC KEY</span></label
+                    <label for="public-key">{{ t('公钥') }} <span>PUBLIC KEY</span></label
                     ><button
                       mat-button
                       type="button"
                       (click)="copy(p().publicKey)"
                       [disabled]="!p().publicKey"
                     >
-                      复制
+                      {{ t('复制') }}
                     </button>
                   </div>
                   <textarea
@@ -323,17 +339,17 @@
                     formControlName="publicKey"
                     spellcheck="false"
                     [placeholder]="algorithm.id === 'rsa' ? '-----BEGIN PUBLIC KEY-----' : '04…'"
-                    aria-label="公钥"
+                    [attr.aria-label]="t('公钥')"
                   ></textarea>
                   <div class="field-caption">
-                    <label for="private-key">私钥 <span>PRIVATE KEY</span></label
+                    <label for="private-key">{{ t('私钥') }} <span>PRIVATE KEY</span></label
                     ><button
                       mat-button
                       type="button"
                       (click)="copy(p().privateKey)"
                       [disabled]="!p().privateKey"
                     >
-                      复制
+                      {{ t('复制') }}
                     </button>
                   </div>
                   <textarea
@@ -344,30 +360,30 @@
                     [placeholder]="
                       algorithm.id === 'rsa' ? '-----BEGIN PRIVATE KEY-----' : '32 bytes Hex…'
                     "
-                    aria-label="私钥"
+                    [attr.aria-label]="t('私钥')"
                   ></textarea>
                 }
                 @if (warning()) {
-                  <div class="warning" role="note">△ {{ warning() }}</div>
+                  <div class="warning" role="note">△ {{ t(warning()) }}</div>
                 }
               </div>
             </section>
           } @else if (warning()) {
-            <div class="warning standalone-warning" role="note">△ {{ warning() }}</div>
+            <div class="warning standalone-warning" role="note">△ {{ t(warning()) }}</div>
           }
           <div class="submit-row">
-            <span>所有计算在当前浏览器完成</span
+            <span>{{ t('所有计算在当前浏览器完成') }}</span
             ><button mat-flat-button type="submit" [disabled]="busy()">
               {{
                 busy()
-                  ? '计算中…'
+                  ? t('计算中…')
                   : p().operation === 'encrypt'
-                    ? '执行加密'
+                    ? t('执行加密')
                     : p().operation === 'decrypt'
-                      ? '执行解密'
+                      ? t('执行解密')
                       : algorithm.category === 'encoding'
-                        ? '转换编码'
-                        : '计算摘要'
+                        ? t('转换编码')
+                        : t('计算摘要')
               }}
               <span class="button-arrow">→</span>
             </button>
@@ -377,16 +393,16 @@
           <div class="panel-heading">
             <h2>
               <span class="step">{{ hasParameters ? '03' : '02' }}</span
-              >输出结果
+              >{{ t('输出结果') }}
             </h2>
             <span class="tiny-label">OUTPUT</span>
           </div>
           <div class="result-body">
             <mat-form-field appearance="outline"
-              ><mat-label>输出编码</mat-label
+              ><mat-label>{{ t('输出编码') }}</mat-label
               ><mat-select formControlName="outputEncoding">
                 @for (encoding of encodings; track encoding.value) {
-                  <mat-option [value]="encoding.value">{{ encoding.label }}</mat-option>
+                  <mat-option [value]="encoding.value">{{ t(encoding.label) }}</mat-option>
                 }
               </mat-select></mat-form-field
             >
@@ -394,25 +410,25 @@
               <mat-progress-bar mode="indeterminate" />
               <div class="result-placeholder">
                 <div class="placeholder-symbol">⋯</div>
-                <strong>正在本地计算</strong>
-                <p>请稍候，密钥生成可能需要几秒钟。</p>
+                <strong>{{ t('正在本地计算') }}</strong>
+                <p>{{ t('请稍候，密钥生成可能需要几秒钟。') }}</p>
               </div>
             } @else if (error()) {
               <div class="error-box" role="alert">
-                <strong>无法完成计算</strong>
-                <p>{{ error() }}</p>
-                <small>修正参数后可以重新执行。</small>
+                <strong>{{ t('无法完成计算') }}</strong>
+                <p>{{ t(error()) }}</p>
+                <small>{{ t('修正参数后可以重新执行。') }}</small>
               </div>
             } @else if (result(); as result) {
               <div class="result-status" [class.stale]="stale()" role="status">
-                <span>{{ stale() ? '参数已变化 · 结果已失效' : '✓ 计算完成' }}</span
+                <span>{{ stale() ? t('参数已变化 · 结果已失效') : t('✓ 计算完成') }}</span
                 ><small>{{ elapsed() }} ms</small>
               </div>
               <textarea
                 class="output-editor"
                 [value]="result.output"
                 readonly
-                aria-label="输出结果"
+                [attr.aria-label]="t('输出结果')"
                 spellcheck="false"
               ></textarea>
               <div class="result-meta">
@@ -421,17 +437,17 @@
               </div>
               @if (result.tag !== undefined) {
                 <div class="tag-heading">
-                  认证标签 <span>{{ p().tagEncoding.toUpperCase() }} · 16 bytes</span>
+                  {{ t('认证标签') }} <span>{{ p().tagEncoding.toUpperCase() }} · 16 bytes</span>
                 </div>
                 <textarea
                   class="tag-output"
                   [value]="result.tag"
                   readonly
-                  aria-label="输出认证标签"
+                  [attr.aria-label]="t('输出认证标签')"
                   spellcheck="false"
                 ></textarea
                 ><button mat-button type="button" (click)="copy(result.tag)" [disabled]="stale()">
-                  复制认证标签
+                  {{ t('复制认证标签') }}
                 </button>
               }
               <div class="result-actions">
@@ -441,35 +457,37 @@
                   (click)="copy(result.output)"
                   [disabled]="stale()"
                 >
-                  复制结果</button
+                  {{ t('复制结果') }}</button
                 ><button mat-button type="button" (click)="refill()" [disabled]="stale()">
-                  回填输入 ↗
+                  {{ t('回填输入 ↗') }}
                 </button>
               </div>
             } @else {
               <div class="result-placeholder">
                 <div class="placeholder-symbol">[ <span>·</span> ]</div>
-                <strong>等待你的第一次计算</strong>
-                <p>填写输入内容与参数，<br />执行后，结果会显示在这里。</p>
+                <strong>{{ t('等待你的第一次计算') }}</strong>
+                <p>{{ t('填写输入内容与参数，') }}<br />{{ t('执行后，结果会显示在这里。') }}</p>
                 <span class="placeholder-tag">PRIVATE BY DESIGN</span>
               </div>
             }
           </div>
-          <div class="result-foot"><span class="mini-lock">◇</span> 密钥和结果不会被保存</div>
+          <div class="result-foot">
+            <span class="mini-lock">◇</span> {{ t('密钥和结果不会被保存') }}
+          </div>
         </section>
       </form>
     </div>
   </mat-tab>
-  <mat-tab label="算法介绍">
+  <mat-tab [label]="t('算法介绍')">
     <ng-template matTabContent>
-      <article class="guide" [attr.aria-label]="algorithm.title + ' 算法介绍'">
+      <article class="guide" [attr.aria-label]="t(algorithm.title) + ' ' + t('算法介绍')">
         <header class="guide-header">
-          <span class="guide-category">{{ algorithm.group }}</span>
-          <h2>了解 {{ algorithm.title }}</h2>
-          <p>{{ guide.summary }}</p>
+          <span class="guide-category">{{ t(algorithm.group) }}</span>
+          <h2>{{ t('了解') }} {{ t(algorithm.title) }}</h2>
+          <p>{{ guide().summary }}</p>
         </header>
         <dl class="guide-facts">
-          @for (fact of guide.facts; track fact.label) {
+          @for (fact of guide().facts; track fact.label) {
             <div>
               <dt>{{ fact.label }}</dt>
               <dd>{{ fact.value }}</dd>
@@ -478,41 +496,53 @@
         </dl>
         <div class="guide-sections">
           <section>
-            <h3>基本原理</h3>
-            <p>{{ guide.principle }}</p>
+            <h3>{{ t('基本原理') }}</h3>
+            <p>{{ guide().principle }}</p>
           </section>
           <section>
-            <h3>常见用途</h3>
-            <p>{{ guide.uses }}</p>
+            <h3>{{ t('常见用途') }}</h3>
+            <p>{{ guide().uses }}</p>
           </section>
         </div>
         <section class="guide-notes">
-          <h3>使用要点</h3>
+          <h3>{{ t('使用要点') }}</h3>
           <ul>
-            @for (note of guide.notes; track note) {
+            @for (note of guide().notes; track note) {
               <li>{{ note }}</li>
             }
           </ul>
         </section>
         <section class="help-strip">
-          <div><span class="help-icon">i</span><strong>互通提示</strong></div>
+          <div>
+            <span class="help-icon">i</span><strong>{{ t('互通提示') }}</strong>
+          </div>
           <p>
             {{
               algorithm.id === 'aes' && p().mode === 'GCM'
-                ? '密文、IV、AAD 与认证标签需分别传递。部分程序将标签附加在密文末尾，使用前请先拆分最后 16 字节。'
+                ? t(
+                    '密文、IV、AAD 与认证标签需分别传递。部分程序将标签附加在密文末尾，使用前请先拆分最后 16 字节。'
+                  )
                 : algorithm.id === 'rsa'
-                  ? '加解密双方必须使用相同的 RSA 填充和 OAEP 摘要。密文长度等于模数长度；明文超限时不会自动分段。'
+                  ? t(
+                      '加解密双方必须使用相同的 RSA 填充和 OAEP 摘要。密文长度等于模数长度；明文超限时不会自动分段。'
+                    )
                   : algorithm.id === 'sm2'
-                    ? '密文顺序、04 前缀与编码必须一致。本工具使用原始点格式，不接受 ASN.1 DER 密文。'
+                    ? t(
+                        '密文顺序、04 前缀与编码必须一致。本工具使用原始点格式，不接受 ASN.1 DER 密文。'
+                      )
                     : isSymmetric
-                      ? '加解密双方必须使用相同的原始密钥、模式、IV 和填充。输入编码按字节解析，不执行隐式口令派生。'
-                      : '摘要和认证值基于输入字节计算。注意 UTF-8、换行与空格差异；Base64 使用标准字母表及填充。'
+                      ? t(
+                          '加解密双方必须使用相同的原始密钥、模式、IV 和填充。输入编码按字节解析，不执行隐式口令派生。'
+                        )
+                      : t(
+                          '摘要和认证值基于输入字节计算。注意 UTF-8、换行与空格差异；Base64 使用标准字母表及填充。'
+                        )
             }}
           </p>
         </section>
         <footer class="guide-sources">
-          <span>参考资料</span>
-          @for (source of guide.sources; track source.url) {
+          <span>{{ t('参考资料') }}</span>
+          @for (source of guide().sources; track source.url) {
             <a [href]="source.url" target="_blank" rel="noopener noreferrer"
               >{{ source.label }} ↗</a
             >

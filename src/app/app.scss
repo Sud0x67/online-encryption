@@ -285,3 +285,53 @@ footer {
     display: none;
   }
 }
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.language-switch {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.language-switch button {
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  min-width: 38px;
+  padding: 5px 7px;
+  cursor: pointer;
+}
+.language-switch button[aria-pressed='true'] {
+  background: #203536;
+  color: var(--accent);
+}
+@media (max-width: 720px) {
+  .topbar-actions .local-badge {
+    display: none;
+  }
+  .topbar-actions {
+    gap: 0;
+  }
+  .topbar {
+    gap: 8px;
+  }
+  .slash {
+    margin: 0 8px;
+  }
+  .topbar > span {
+    font-size: 10px;
+    min-width: 0;
+  }
+}
+
+:host(.english) .brand small {
+  letter-spacing: 0.6px;
+}

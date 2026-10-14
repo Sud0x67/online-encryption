@@ -1,6 +1,6 @@
 import { AlgorithmId } from '../crypto/types';
 
-interface AlgorithmGuide {
+export interface AlgorithmGuide {
   summary: string;
   facts: { label: string; value: string }[];
   principle: string;

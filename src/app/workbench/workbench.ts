@@ -11,11 +11,14 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ALGORITHM_GUIDES } from './algorithm-guides';
+import { ENGLISH_ALGORITHM_GUIDES } from './algorithm-guides.en';
+import { I18nService } from '../i18n/i18n.service';
 import { algorithmById, defaults } from '../crypto/registry';
 import { CryptoService } from '../crypto/crypto.service';
 import { decode, encode } from '../crypto/encoding';
 import { CryptoResult, Encoding, Hash, KeyPair, Operation } from '../crypto/types';
 @Component({
+  host: { '[class.english]': "i18n.language() === 'en'" },
   selector: 'app-workbench',
   imports: [
     ReactiveFormsModule,
@@ -31,11 +34,18 @@ import { CryptoResult, Encoding, Hash, KeyPair, Operation } from '../crypto/type
   styleUrl: './workbench.scss',
 })
 export class Workbench {
+  readonly i18n = inject(I18nService);
+  readonly t = (text: string) => this.i18n.t(text);
   private readonly cryptoService = inject(CryptoService);
   private readonly snack = inject(MatSnackBar);
   private readonly destroyRef = inject(DestroyRef);
   readonly algorithm = algorithmById(inject(ActivatedRoute).snapshot.url.at(-1)?.path ?? 'aes');
-  readonly guide = ALGORITHM_GUIDES[this.algorithm.id];
+  readonly guide = computed(
+    () =>
+      (this.i18n.language() === 'en' ? ENGLISH_ALGORITHM_GUIDES : ALGORITHM_GUIDES)[
+        this.algorithm.id
+      ],
+  );
   readonly form = inject(FormBuilder).nonNullable.group(defaults(this.algorithm.id));
   readonly p = signal(this.form.getRawValue());
   readonly busy = signal(false);
@@ -187,9 +197,9 @@ export class Workbench {
   async copy(value: string): Promise<void> {
     try {
       await navigator.clipboard.writeText(value);
-      this.snack.open('已复制到剪贴板', '关闭', { duration: 2200 });
+      this.snack.open(this.t('已复制到剪贴板'), this.t('关闭'), { duration: 2200 });
     } catch {
-      this.snack.open('复制失败，请手动选择结果复制。', '关闭', { duration: 3500 });
+      this.snack.open(this.t('复制失败，请手动选择结果复制。'), this.t('关闭'), { duration: 3500 });
     }
   }
 }

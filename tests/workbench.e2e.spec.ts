@@ -254,3 +254,118 @@ test('all tools have readable guides, source links and responsive layout', async
     );
   }
 });
+
+test('language switching preserves active tab, plaintext, key, ciphertext and error state', async ({
+  page,
+}) => {
+  await open(page);
+  await page.getByRole('button', { name: '载入示例' }).click();
+  await run(page);
+  const ciphertext = await output(page).inputValue();
+  const key = await page.getByRole('textbox', { name: /原始密钥/ }).inputValue();
+  await page.getByRole('tab', { name: '算法介绍', exact: true }).click();
+  await page.getByRole('button', { name: 'English', exact: true }).click();
+  await expect(page.getByRole('tab', { name: 'Algorithm guide', exact: true })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
+  await expect(page.getByRole('heading', { name: 'About AES', exact: true })).toBeVisible();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(page).toHaveTitle('Cipher Lab · Encryption Toolkit');
+  await page.getByRole('tab', { name: 'Tool', exact: true }).click();
+  await expect(page.getByRole('textbox', { name: 'Output', exact: true })).toHaveValue(ciphertext);
+  await expect(page.getByRole('textbox', { name: /Raw key/ })).toHaveValue(key);
+  await expect(page.getByRole('textbox', { name: 'Input content', exact: true })).toHaveValue(
+    'Hello, Cipher Lab! 你好 🔐',
+  );
+  await expect(page.getByRole('status')).toContainText('Complete');
+  await page.getByRole('button', { name: 'Use as input ↗', exact: true }).click();
+  await page.getByRole('button', { name: 'Decrypt →', exact: true }).click();
+  await expect(page.getByRole('textbox', { name: 'Output', exact: true })).toHaveValue(
+    'Hello, Cipher Lab! 你好 🔐',
+  );
+  await page.getByRole('button', { name: 'Clear', exact: true }).click();
+  await page.getByRole('button', { name: 'Encrypt →', exact: true }).click();
+  await expect(page.getByRole('alert')).toContainText(
+    'AES key must contain 16 / 24 / 32 bytes (received 0 bytes).',
+  );
+  await page.getByRole('button', { name: '中文', exact: true }).click();
+  await expect(page.getByRole('alert')).toContainText('密钥必须为');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
+});
+
+test('English UI and all guides translate without changing routes or writing storage', async ({
+  page,
+}) => {
+  await open(page);
+  await page.getByRole('button', { name: 'English', exact: true }).click();
+  await expect(page.getByRole('tab', { name: 'Tool', exact: true })).toBeVisible();
+  for (const id of [
+    'aes',
+    'des',
+    '3des',
+    'sm4',
+    'rsa',
+    'sm2',
+    'md5',
+    'sha1',
+    'sha256',
+    'sha384',
+    'sha512',
+    'sm3',
+    'hmac',
+    'encoding',
+  ]) {
+    // Navigate within the app; a full page reload intentionally restores the Chinese default.
+    await page.evaluate((id) => {
+      location.hash = '/tool/' + id;
+    }, id);
+    await expect(page.locator('h1')).toContainText(
+      id === 'encoding'
+        ? 'Encoding'
+        : id === '3des'
+          ? '3DES'
+          : id.startsWith('sha')
+            ? 'SHA-'
+            : id.toUpperCase(),
+    );
+    await expect(page.getByRole('tab', { name: 'Tool', exact: true })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    expect((await page.locator('body').innerText()).replace('中文', '')).not.toMatch(
+      /[\u4e00-\u9fff]/,
+    );
+    for (const text of await page
+      .locator('[placeholder]')
+      .evaluateAll((elements) => elements.map((el) => el.getAttribute('placeholder'))))
+      expect(text).not.toMatch(/[\u4e00-\u9fff]/);
+    await page.getByRole('tab', { name: 'Algorithm guide', exact: true }).click();
+    await expect(page.getByRole('article')).toBeVisible();
+    expect(await page.getByRole('article').innerText()).not.toMatch(/[\u4e00-\u9fff]/);
+    expect(await page.getByRole('article').getAttribute('aria-label')).not.toMatch(
+      /[\u4e00-\u9fff]/,
+    );
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
+  }
+  expect(
+    await page.evaluate(() => ({ local: localStorage.length, session: sessionStorage.length })),
+  ).toEqual({ local: 0, session: 0 });
+});
+
+test('switching language during a worker operation does not cancel or stale the result', async ({
+  page,
+}) => {
+  await open(page, 'rsa');
+  await page.getByRole('textbox', { name: '公钥', exact: true }).fill(fixtures.rsa.publicKey);
+  await page.getByRole('textbox', { name: '输入内容' }).fill('language switching');
+  await page.getByRole('button', { name: '执行加密 →', exact: true }).click();
+  await page.getByRole('button', { name: 'English', exact: true }).click();
+  await expect(page.getByRole('status')).toContainText('Complete');
+  await expect(page.getByRole('button', { name: 'Use as input ↗', exact: true })).toBeEnabled();
+  await expect(page.getByRole('textbox', { name: 'Input content', exact: true })).toHaveValue(
+    'language switching',
+  );
+});

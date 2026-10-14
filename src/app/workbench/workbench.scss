@@ -671,3 +671,7 @@ h2 {
 .standalone-warning {
   margin-top: 16px;
 }
+
+:host(.english) .encoded-field {
+  grid-template-columns: 132px minmax(0, 1fr);
+}

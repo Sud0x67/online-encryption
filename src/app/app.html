@@ -1,23 +1,27 @@
 <div class="app-shell">
-  <aside class="sidebar" aria-label="算法导航">
-    <a class="brand" routerLink="/tool/aes" aria-label="Cipher Lab 首页"
+  <aside class="sidebar" [attr.aria-label]="t('算法导航')">
+    <a class="brand" routerLink="/tool/aes" [attr.aria-label]="t('Cipher Lab 首页')"
       ><span class="brand-mark">&#123;<i>c</i>&#125;</span
-      ><span>Cipher<span class="brand-light">Lab</span><small>加解密工具箱</small></span></a
+      ><span
+        >Cipher<span class="brand-light">Lab</span><small>{{ t('加解密工具箱') }}</small></span
+      ></a
     >
-    <div class="nav-heading">WORKSPACE <span>14 TOOLS</span></div>
+    <div class="nav-heading">
+      {{ t('工作区') }} <span>{{ t('14 个工具') }}</span>
+    </div>
     <nav>
       @for (group of groups; track group.name) {
         <div class="nav-group">
-          <h2>{{ group.name }}</h2>
+          <h2>{{ t(group.name) }}</h2>
           @for (algorithm of group.algorithms; track algorithm.id) {
             <a
               class="nav-link"
               [routerLink]="'/tool/' + algorithm.id"
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: true }"
-              ><span class="nav-dot"></span><span>{{ algorithm.title }}</span>
+              ><span class="nav-dot"></span><span>{{ t(algorithm.title) }}</span>
               @if (algorithm.badge) {
-                <small [class.legacy]="algorithm.badge === '兼容'">{{ algorithm.badge }}</small>
+                <small [class.legacy]="algorithm.badge === '兼容'">{{ t(algorithm.badge) }}</small>
               }
             </a>
           }
@@ -25,26 +29,51 @@
       }
     </nav>
     <div class="sidebar-note">
-      <span class="status-dot"></span><strong>本地计算 · 数据不上传</strong>
-      <p>输入、密钥与结果仅存在于当前页面内存中。</p>
+      <span class="status-dot"></span><strong>{{ t('本地计算 · 数据不上传') }}</strong>
+      <p>{{ t('输入、密钥与结果仅存在于当前页面内存中。') }}</p>
     </div>
     <a
       class="source-link"
       href="https://github.com/Sud0x67/online-encryption"
       target="_blank"
       rel="noopener noreferrer"
-      >↗ GitHub 源码 <span>v1.0</span></a
+      >{{ t('↗ GitHub 源码') }} <span>v1.0</span></a
     >
   </aside>
   <div class="main-shell">
     <header class="topbar">
-      <span><span class="breadcrumb-root">工具箱</span><span class="slash">/</span>加密工作台</span
-      ><span class="local-badge"><span class="status-dot"></span>浏览器本地运行</span>
+      <span
+        ><span class="breadcrumb-root">{{ t('工具箱') }}</span
+        ><span class="slash">/</span>{{ t('加密工作台') }}</span
+      >
+      <div class="topbar-actions">
+        <span class="local-badge"><span class="status-dot"></span>{{ t('浏览器本地运行') }}</span>
+        <div class="language-switch" role="group" [attr.aria-label]="t('界面语言')">
+          <button
+            type="button"
+            lang="zh-CN"
+            aria-label="中文"
+            [attr.aria-pressed]="i18n.language() === 'zh-CN'"
+            (click)="i18n.setLanguage('zh-CN')"
+          >
+            中文
+          </button>
+          <button
+            type="button"
+            lang="en"
+            aria-label="English"
+            [attr.aria-pressed]="i18n.language() === 'en'"
+            (click)="i18n.setLanguage('en')"
+          >
+            EN
+          </button>
+        </div>
+      </div>
     </header>
     <main><router-outlet /></main>
     <footer>
-      <span>CIPHER LAB <span class="footer-divider">/</span> 让每一个字节清晰可见</span
-      ><span>Web Crypto · 开源工具</span>
+      <span>CIPHER LAB <span class="footer-divider">/</span> {{ t('让每一个字节清晰可见') }}</span
+      ><span>{{ t('Web Crypto · 开源工具') }}</span>
     </footer>
   </div>
 </div>
